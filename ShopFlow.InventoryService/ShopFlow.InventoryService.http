@@ -1,0 +1,6 @@
+@ShopFlow.InventoryService_HostAddress = http://localhost:5120
+
+GET {{ShopFlow.InventoryService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
