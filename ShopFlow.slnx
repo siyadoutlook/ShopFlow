@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="ShopFlow.Gateway/ShopFlow.Gateway.csproj" />
   <Project Path="ShopFlow.InventoryService/ShopFlow.InventoryService.csproj" />
+  <Project Path="ShopFlow.NotificationService/ShopFlow.NotificationService.csproj" />
   <Project Path="ShopFlow.OrderService/ShopFlow.OrderService.csproj" />
   <Project Path="ShopFlow.Shared/ShopFlow.Shared.csproj" Id="c241779f-0207-4331-b051-6c56956bacf2" />
 </Solution>

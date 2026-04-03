@@ -1,0 +1,71 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Gateway",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-gateway",
+      "program": "${workspaceFolder}/ShopFlow.Gateway/bin/Debug/net10.0/ShopFlow.Gateway.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ShopFlow.Gateway",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5120"
+      }
+    },
+    {
+      "name": "InventoryService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-inventory",
+      "program": "${workspaceFolder}/ShopFlow.InventoryService/bin/Debug/net10.0/ShopFlow.InventoryService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ShopFlow.InventoryService",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    {
+      "name": "NotificationService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-notification",
+      "program": "${workspaceFolder}/ShopFlow.NotificationService/bin/Debug/net10.0/ShopFlow.NotificationService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ShopFlow.NotificationService",
+      "stopAtEntry": false,
+      "env": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    {
+      "name": "OrderService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-order",
+      "program": "${workspaceFolder}/ShopFlow.OrderService/bin/Debug/net10.0/ShopFlow.OrderService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/ShopFlow.OrderService",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5001"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ShopFlow: All Services",
+      "configurations": [
+        "Gateway",
+        "InventoryService",
+        "NotificationService",
+        "OrderService"
+      ],
+      "stopAll": true
+    }
+  ]
+}

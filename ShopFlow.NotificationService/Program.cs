@@ -1,14 +1,15 @@
 using MassTransit;
-using ShopFlow.InventoryService.Consumer;
-using ShopFlow.InventoryService.Services;
+using ShopFlow.NotificationService.Consumer;
 using ShopFlow.Shared.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddObservability("ShopFlow.InventoryService");
+builder.Logging.Configure(options =>
+{
+    options.ActivityTrackingOptions = ActivityTrackingOptions.TraceId | ActivityTrackingOptions.SpanId;
+});
 
-builder.Services.AddControllers();
-builder.Services.AddGrpc();
+builder.Services.AddObservability("ShopFlow.NotificationService");
 
 builder.Services.AddMassTransit(x =>
 {
@@ -26,10 +27,5 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-var app = builder.Build();
-
-app.MapControllers();
-app.MapGrpcService<InventoryGrpcService>();
-
-app.Run();
-
+var host = builder.Build();
+host.Run();
