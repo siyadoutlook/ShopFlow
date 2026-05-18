@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ShopFlow.OrderService.Data;
+using ShopFlow.OrderService.Resilience;
 using ShopFlow.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,9 +39,10 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddGrpcClient<ShopFlow.Shared.Protos.InventoryService.InventoryServiceClient>(options =>
-{
-    options.Address = new Uri(builder.Configuration["InventoryService:GrpcUrl"]!);
-});
+    {
+        options.Address = new Uri(builder.Configuration["InventoryService:GrpcUrl"]!);
+    })
+    .AddInventoryServiceResilience();
 
 var app = builder.Build();
 

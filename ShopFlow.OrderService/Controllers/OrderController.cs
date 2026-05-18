@@ -1,6 +1,8 @@
-﻿using MassTransit;
+﻿using Grpc.Core;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Polly.CircuitBreaker;
 using ShopFlow.OrderService.Data;
 using ShopFlow.OrderService.Models;
 using ShopFlow.Shared.Events;
@@ -10,7 +12,9 @@ namespace ShopFlow.OrderService.Controllers;
 
 [Route("orders")]
 [ApiController]
-public class OrderController(InventoryService.InventoryServiceClient inventoryClient, OrderDbContext dbContext,
+public class OrderController(
+    InventoryService.InventoryServiceClient inventoryClient,
+    OrderDbContext dbContext,
     IPublishEndpoint publishEndpoint) : ControllerBase
 {
     [HttpGet]
@@ -22,11 +26,37 @@ public class OrderController(InventoryService.InventoryServiceClient inventoryCl
     [HttpPost]
     public async Task<ActionResult<Order>> Create(Order order)
     {
-        var stockResponse = await inventoryClient.CheckStockAsync(new StockRequest()
+        StockResponse stockResponse;
+        try
         {
-            ProductId = order.ProductId,
-            Quantity = order.Quantity
-        });
+            stockResponse = await inventoryClient.CheckStockAsync(new StockRequest()
+            {
+                ProductId = order.ProductId,
+                Quantity = order.Quantity
+            });
+        }
+        catch (BrokenCircuitException)
+        {
+            return StatusCode(503, new
+            {
+                message = "Inventory Service is currently unavailable. " +
+                          "Please try again in a few moments."
+            });
+        }
+        catch (RpcException ex) when (ex.StatusCode == Grpc.Core.StatusCode.DeadlineExceeded)
+        {
+            return StatusCode(503, new
+            {
+                message = "Inventory Service timed out. Please try again."
+            });
+        }
+        catch (RpcException ex) when (ex.StatusCode == Grpc.Core.StatusCode.Unavailable)
+        {
+            return StatusCode(503, new
+            {
+                message = "Inventory Service is unreachable. Please try again shortly."
+            });
+        }
 
         if (!stockResponse.IsAvailable)
         {

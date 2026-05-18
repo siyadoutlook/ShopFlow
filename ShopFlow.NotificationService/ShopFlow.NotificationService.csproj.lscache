@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=ShopFlow.NotificationService
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=<PATH>../ShopFlow.slnx
+SolutionPath=<PATH>../ShopFlow.sln
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/ShopFlow.NotificationService.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/ShopFlow.NotificationService.dll
@@ -380,9 +380,9 @@ Program.cs
  grpc.net.client/2.76.0/lib/net10.0/Grpc.Net.Client.dll
  grpc.net.clientfactory/2.76.0/lib/net10.0/Grpc.Net.ClientFactory.dll
  grpc.net.common/2.76.0/lib/net10.0/Grpc.Net.Common.dll
- masstransit.abstractions/9.1.0/lib/net10.0/MassTransit.Abstractions.dll
- masstransit.rabbitmq/9.1.0/lib/net10.0/MassTransit.RabbitMqTransport.dll
- masstransit/9.1.0/lib/net10.0/MassTransit.dll
+ masstransit.abstractions/8.5.6/lib/net10.0/MassTransit.Abstractions.dll
+ masstransit.rabbitmq/8.5.6/lib/net10.0/MassTransit.RabbitMqTransport.dll
+ masstransit/8.5.6/lib/net10.0/MassTransit.dll
  opentelemetry.api.providerbuilderextensions/1.15.1/lib/net10.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll
  opentelemetry.api/1.15.1/lib/net10.0/OpenTelemetry.Api.dll
  opentelemetry.exporter.console/1.15.1/lib/net10.0/OpenTelemetry.Exporter.Console.dll

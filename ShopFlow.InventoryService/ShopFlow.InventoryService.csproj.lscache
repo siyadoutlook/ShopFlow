@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=ShopFlow.InventoryService
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=<PATH>../ShopFlow.slnx
+SolutionPath=<PATH>../ShopFlow.sln
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/ShopFlow.InventoryService.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/ShopFlow.InventoryService.dll
@@ -385,9 +385,9 @@ Services/InventoryGrpcService.cs
  grpc.net.client/2.76.0/lib/net10.0/Grpc.Net.Client.dll
  grpc.net.clientfactory/2.76.0/lib/net10.0/Grpc.Net.ClientFactory.dll
  grpc.net.common/2.76.0/lib/net10.0/Grpc.Net.Common.dll
- masstransit.abstractions/9.1.0/lib/net10.0/MassTransit.Abstractions.dll
- masstransit.rabbitmq/9.1.0/lib/net10.0/MassTransit.RabbitMqTransport.dll
- masstransit/9.1.0/lib/net10.0/MassTransit.dll
+ masstransit.abstractions/8.5.6/lib/net10.0/MassTransit.Abstractions.dll
+ masstransit.rabbitmq/8.5.6/lib/net10.0/MassTransit.RabbitMqTransport.dll
+ masstransit/8.5.6/lib/net10.0/MassTransit.dll
  microsoft.aspnetcore.openapi/10.0.5/lib/net10.0/Microsoft.AspNetCore.OpenApi.dll
  microsoft.openapi/2.0.0/lib/net8.0/Microsoft.OpenApi.dll
  opentelemetry.api.providerbuilderextensions/1.15.1/lib/net10.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll

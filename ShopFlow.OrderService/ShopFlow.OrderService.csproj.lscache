@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=ShopFlow.OrderService
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=<PATH>../ShopFlow.slnx
+SolutionPath=<PATH>../ShopFlow.sln
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/ShopFlow.OrderService.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/ShopFlow.OrderService.dll
@@ -387,10 +387,10 @@ Program.cs
  grpc.net.client/2.76.0/lib/net10.0/Grpc.Net.Client.dll
  grpc.net.clientfactory/2.76.0/lib/net10.0/Grpc.Net.ClientFactory.dll
  grpc.net.common/2.76.0/lib/net10.0/Grpc.Net.Common.dll
- masstransit.abstractions/9.1.0/lib/net10.0/MassTransit.Abstractions.dll
- masstransit.entityframeworkcore/9.1.0/lib/net10.0/MassTransit.EntityFrameworkCoreIntegration.dll
- masstransit.rabbitmq/9.1.0/lib/net10.0/MassTransit.RabbitMqTransport.dll
- masstransit/9.1.0/lib/net10.0/MassTransit.dll
+ masstransit.abstractions/8.5.6/lib/net10.0/MassTransit.Abstractions.dll
+ masstransit.entityframeworkcore/8.5.6/lib/net10.0/MassTransit.EntityFrameworkCoreIntegration.dll
+ masstransit.rabbitmq/8.5.6/lib/net10.0/MassTransit.RabbitMqTransport.dll
+ masstransit/8.5.6/lib/net10.0/MassTransit.dll
  microsoft.aspnetcore.openapi/10.0.5/lib/net10.0/Microsoft.AspNetCore.OpenApi.dll
  microsoft.data.sqlite.core/10.0.5/lib/net8.0/Microsoft.Data.Sqlite.dll
  microsoft.entityframeworkcore.abstractions/10.0.5/lib/net10.0/Microsoft.EntityFrameworkCore.Abstractions.dll
