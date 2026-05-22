@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddObservability("ShopFlow.OrderService");
 
 builder.Services.AddDbContext<OrderDbContext>(options =>
-    options.UseSqlite("Data Source=orders.db"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("OrdersDb")));
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -22,13 +22,15 @@ builder.Services.AddMassTransit(x =>
 {
     x.AddEntityFrameworkOutbox<OrderDbContext>(o =>
     {
-        o.UseSqlite();
+        o.UsePostgres();
         o.UseBusOutbox();
     });
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        var host = builder.Configuration["RabbitMq:Host"] ?? "localhost";
+        
+        cfg.Host(host, "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
