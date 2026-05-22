@@ -1,0 +1,132 @@
+﻿name: shopflow
+
+services:
+
+  # ── Infrastructure ──────────────────────────────────────────
+
+  postgres:
+    image: postgres:16
+    container_name: shopflow-postgres
+    environment:
+      POSTGRES_DB: shopflow_orders
+      POSTGRES_USER: shopflow
+      POSTGRES_PASSWORD: shopflow123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopflow -d shopflow_orders"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: shopflow-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: shopflow-aspire
+    ports:
+      - "18888:18888"
+      - "4317:18889"
+    environment:
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: true
+
+  # ── Services ─────────────────────────────────────────────────
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: ShopFlow.InventoryService/Dockerfile
+    container_name: shopflow-inventory
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      RabbitMq__Host: rabbitmq
+      Kestrel__Endpoints__Http__Url: http://0.0.0.0:8080
+      Kestrel__Endpoints__Http__Protocols: Http1
+      Kestrel__Endpoints__Grpc__Url: http://0.0.0.0:8081
+      Kestrel__Endpoints__Grpc__Protocols: Http2
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://aspire-dashboard:18889
+      OTEL_SERVICE_NAME: ShopFlow.InventoryService
+    ports:
+      - "5002:8080"
+      - "5102:8081"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  order-service:
+    build:
+      context: .
+      dockerfile: ShopFlow.OrderService/Dockerfile
+    container_name: shopflow-order
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      Kestrel__Endpoints__Http__Url: http://0.0.0.0:8080
+      Kestrel__Endpoints__Http__Protocols: Http1
+      ConnectionStrings__OrdersDb: Host=postgres;Port=5432;Database=shopflow_orders;Username=shopflow;Password=shopflow123
+      RabbitMq__Host: rabbitmq
+      InventoryService__GrpcUrl: http://inventory-service:8081
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://aspire-dashboard:18889
+      OTEL_SERVICE_NAME: ShopFlow.OrderService
+    ports:
+      - "5001:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: ShopFlow.NotificationService/Dockerfile
+    container_name: shopflow-notification
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      RabbitMq__Host: rabbitmq
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://aspire-dashboard:18889
+      OTEL_SERVICE_NAME: ShopFlow.NotificationService
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ShopFlow.Gateway/Dockerfile
+    container_name: shopflow-gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://aspire-dashboard:18889
+      OTEL_SERVICE_NAME: ShopFlow.Gateway
+      ReverseProxy__Clusters__orders-cluster__Destinations__primary__Address: http://order-service:8080/
+      ReverseProxy__Clusters__inventory-cluster__Destinations__primary__Address: http://inventory-service:8080/
+    ports:
+      - "5120:8080"
+    depends_on:
+      order-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+
+volumes:
+  postgres-data:
+  rabbitmq-data:

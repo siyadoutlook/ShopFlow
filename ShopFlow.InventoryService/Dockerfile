@@ -1,24 +1,27 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-USER $APP_UID
+﻿# Stage 1 — Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+COPY ShopFlow.InventoryService/ShopFlow.InventoryService.csproj ShopFlow.InventoryService/
+COPY ShopFlow.Shared/ShopFlow.Shared.csproj ShopFlow.Shared/
+
+RUN dotnet restore ShopFlow.InventoryService/ShopFlow.InventoryService.csproj
+
+COPY ShopFlow.InventoryService/ ShopFlow.InventoryService/
+COPY ShopFlow.Shared/ ShopFlow.Shared/
+
+RUN dotnet publish ShopFlow.InventoryService/ShopFlow.InventoryService.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore
+
+# Stage 2 — Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
+
+COPY --from=build /app/publish .
+
 EXPOSE 8080
 EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["ShopFlow.InventoryService/ShopFlow.InventoryService.csproj", "ShopFlow.InventoryService/"]
-COPY ["ShopFlow.Shared/ShopFlow.Shared.csproj", "ShopFlow.Shared/"]
-RUN dotnet restore "ShopFlow.InventoryService/ShopFlow.InventoryService.csproj"
-COPY . .
-WORKDIR "/src/ShopFlow.InventoryService"
-RUN dotnet build "./ShopFlow.InventoryService.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ShopFlow.InventoryService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ShopFlow.InventoryService.dll"]
